@@ -3,4 +3,11 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <body>
   <h1>Hearts</h1>
+  {% block app_content %}
+
+
+  <div id="react-root"></div>
+
+  <script src="{{ url_for('static', filename='dist/bundle.js') }}"></script>
+  {% endblock %}
 </body>
