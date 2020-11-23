@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import HelloWorld from "./HelloWorld";
+import CreateGame from "./CreateGame";
   
-ReactDOM.render(<HelloWorld />, document.getElementById("react-root"));
-console.log('test');
+ReactDOM.render(<CreateGame />, document.getElementById("react-root"));
