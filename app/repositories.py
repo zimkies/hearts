@@ -27,6 +27,8 @@ class Game(namedtuple('Game', ["id", "state", "players", "hands"])):
 
 
 
+# TODO: we need a persisted non-in-memory store of games so that refreshing the
+# app doesn't delete all of them :p
 GAMES = {}
 class GameRepository():
     @staticmethod
