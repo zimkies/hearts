@@ -57,12 +57,16 @@ class GameRepository():
         print(GAMES)
         return game
 
-
 class Deck:
     NUMBERS = range(1, 13)
     SUITS = ('h', 'd', 'c', 's')
 
-    CARDS = [str(n) + s for n, s in zip(NUMBERS, SUITS)]
+    CARDS = []
+    for n in NUMBERS:
+        for s in SUITS:
+            CARDS.append(str(n) + s)
+
+    # CARDS = [str(n) + s for n in NUMBERS for s in SUITS]
 
     def __init__(self):
         self.cards =  self.CARDS[:]
