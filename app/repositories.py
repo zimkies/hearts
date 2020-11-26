@@ -26,7 +26,7 @@ class Game():
             'players': self.players,
             'hands': self.hands,
             'moves': self.moves,
-            'current_player': self.current_player
+            'current_player': self.current_player,
         }
 
     def __str__(self):
@@ -78,9 +78,16 @@ class Game():
         # Don't show everyone's hands
         del attributes["hands"]
 
+        current_trick = self.get_current_trick()
+        if current_trick:
+            attributes["current_trick"] = current_trick.as_dict()
+
         return attributes
 
     def get_current_trick(self):
+        if not len(self.tricks):
+            return None
+
         return self.tricks[-1]
 
     def _next_player(self):
@@ -154,9 +161,21 @@ class Card(namedtuple('Card', ["number", "suit"])):
 class Trick(namedtuple('Trick', ["number", "plays"])):
     pass
 
+    def as_dict(self):
+        return {
+            'number': self.number,
+            'plays': self.plays
+        }
+
 
 class Play(namedtuple('Play', ["player", "card"])):
     pass
+
+    def as_dict(self):
+        return {
+            'player': player,
+            'card': card
+        }
 
 
 
