@@ -23,7 +23,6 @@ class Home extends React.Component {
         fetch('/api/games/', {method: 'POST'})
             .then(response => response.json())
             .then((game) => {
-                console.log(game);
                 history.push(`/games/${game.id}`);
             })
     }
@@ -119,7 +118,7 @@ class Card extends React.Component {
         // })
         // .then(response => response.json())
         // .then(data => {
-        // console.log('Success:', data);
+        //     console.log('Success:', data);
         // });
     }
 
