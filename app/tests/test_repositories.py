@@ -31,3 +31,18 @@ class TestGame(unittest.TestCase):
         self.assertTrue(card not in game.hands[starting_player])
 
         self.assertEqual(game.current_player, "michael")
+
+    def test_starting_game_fills_empty_players(self):
+        game = Game(id=uuid.uuid4().hex[:5], players=["ben", None, None, None])
+
+        self.assertEqual(game.players, ["ben", None, None, None])
+
+        game.start()
+
+
+        self.assertEqual(len(game.players), 4)
+        for i, p in enumerate(game.players):
+            if i != 0:
+                self.assertTrue('AI-' in p)
+            else:
+                self.assertEqual(p, "ben")

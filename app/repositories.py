@@ -2,14 +2,41 @@ from collections import namedtuple
 import random
 import uuid
 
+class AIPlayer():
+
+    def __init__(self, username=None):
+        if not username:
+            username = 'AI-' + uuid.uuid4().hex[:5]
+
+        self.username = username
+
+    def make_move(self, hand, trick):
+
+        # TODO: make this actually follow the rules
+        # If first trick, first hand, play 2clubs
+        if trick.number == 0 and not trick.plays:
+            return Card.from_shorthand('2c')
+
+        # if first play of trick, play non heart/Qs
+        # if
+        # otherwise, follow suit,
+        # otherwise play non heart
+
+        return random.choice(hand)
+
+
+
+def is_ai(player):
+    return 'AI-' in player
+
 
 class Game():
-    def __init__(self, id, state='UNSTARTED', players=[], hands={}, moves=[]):
+    def __init__(self, id, state='UNSTARTED', players=None, hands=None, moves=None):
         self.id = id
         self.state = state
-        self.players = players
-        self.hands = hands
-        self.moves = moves
+        self.players = players or [None, None, None, None]
+        self.hands = hands or {}
+        self.moves = moves or []
         self.current_player = None
         self.tricks = []
 
@@ -20,20 +47,37 @@ class Game():
             'players': self.players,
             'hands': self.hands,
             'moves': self.moves,
-            'current_player': self.current_player
+            'current_player': self.current_player,
         }
 
     def __str__(self):
         return str(self.as_dict())
 
+    def add_player(self, player, position):
+        self.players[position] = player
+
     def start(self):
+        self.fill_empty_players()
         self.state = "STARTED"
         self.deal()
 
         self.current_player = self._find_starting_player()
         self.tricks.append(Trick(number=0, plays=[]))
 
+        while is_ai(self.current_player):
+            card_to_play = AIPlayer(self.current_player).make_move(
+                hand=self.hands[self.current_player],
+                trick=self.get_current_trick())
+
+            self.move(self.current_player, card_to_play)
+
         return self
+
+
+    def fill_empty_players(self):
+        for i, p in enumerate(self.players):
+            if p is None:
+                self.players[i] = AIPlayer().username
 
     def deal(self, deck=None):
         if not deck:
@@ -52,9 +96,6 @@ class Game():
             if Card.from_shorthand('2c') in v:
                 return k
 
-    def add_player(self, player):
-        self.players.append(player)
-
     def as_dict_for_player(self, player):
         attributes = self.as_dict()
 
@@ -66,13 +107,20 @@ class Game():
         # Don't show everyone's hands
         del attributes["hands"]
 
+        current_trick = self.get_current_trick()
+        if current_trick:
+            attributes["current_trick"] = current_trick.as_dict()
+
         return attributes
 
     def get_current_trick(self):
+        if not len(self.tricks):
+            return None
+
         return self.tricks[-1]
 
     def _next_player(self):
-        index = self.players.index(self.current_player) + 1 % 4
+        index = (self.players.index(self.current_player) + 1) % 4
         return self.players[index]
 
     def move(self, player, card):
@@ -100,8 +148,11 @@ class Game():
         # - remove card from hand
         self.hands[player].remove(card)
 
-        if len(trick.plays) != 4:
+        if len(trick.plays) < 4:
             self.current_player = self._next_player()
+            return
+
+
 
         # - if not end of trick, set new current player's turn
         #     - trigger 'next player'
@@ -142,9 +193,21 @@ class Card(namedtuple('Card', ["number", "suit"])):
 class Trick(namedtuple('Trick', ["number", "plays"])):
     pass
 
+    def as_dict(self):
+        return {
+            'number': self.number,
+            'plays': self.plays
+        }
+
 
 class Play(namedtuple('Play', ["player", "card"])):
     pass
+
+    def as_dict(self):
+        return {
+            'player': player,
+            'card': card
+        }
 
 
 
@@ -155,13 +218,6 @@ class GameRepository():
     @staticmethod
     def get(game_id):
         print(GAMES)
-        return GAMES[game_id]
-
-    @classmethod
-    def start(cls, game_id):
-        game = GAMES[game_id]
-        game = game.start()
-        GAMES[game_id] = game
         return GAMES[game_id]
 
     @staticmethod
