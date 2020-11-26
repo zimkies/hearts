@@ -196,7 +196,7 @@ class Trick(namedtuple('Trick', ["number", "plays"])):
     def as_dict(self):
         return {
             'number': self.number,
-            'plays': self.plays
+            'plays': [p.as_dict() for p in self.plays]
         }
 
 
@@ -205,8 +205,8 @@ class Play(namedtuple('Play', ["player", "card"])):
 
     def as_dict(self):
         return {
-            'player': player,
-            'card': card
+            'player': self.player,
+            'card': self.card
         }
 
 
@@ -253,7 +253,7 @@ class Deck:
     def split(self):
         return [
             self.cards[:13],
-            self.cards[14:26],
-            self.cards[27:39],
-            self.cards[40:52]
+            self.cards[13:26],
+            self.cards[26:39],
+            self.cards[39:52]
         ]
