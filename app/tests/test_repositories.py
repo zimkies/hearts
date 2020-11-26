@@ -33,13 +33,16 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.current_player, "michael")
 
     def test_starting_game_fills_empty_players(self):
-        game = Game(id=uuid.uuid4().hex[:5])
+        game = Game(id=uuid.uuid4().hex[:5], players=["ben", None, None, None])
 
-        self.assertEqual(game.players, [None, None, None, None])
+        self.assertEqual(game.players, ["ben", None, None, None])
 
         game.start()
 
 
         self.assertEqual(len(game.players), 4)
-        for p in game.players:
-            self.assertTrue('AI-' in p)
+        for i, p in enumerate(game.players):
+            if i != 0:
+                self.assertTrue('AI-' in p)
+            else:
+                self.assertEqual(p, "ben")

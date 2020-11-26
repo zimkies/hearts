@@ -4,9 +4,30 @@ import uuid
 
 class AIPlayer():
 
-    def __init__(self):
-        self.username = 'AI-' + uuid.uuid4().hex[:5]
+    def __init__(self, username=None):
+        if not username:
+            username = 'AI-' + uuid.uuid4().hex[:5]
 
+        self.username = username
+
+    def make_move(self, hand, trick):
+
+        # TODO: make this actually follow the rules
+        # If first trick, first hand, play 2clubs
+        if trick.number == 0 and not trick.plays:
+            return Card.from_shorthand('2c')
+
+        # if first play of trick, play non heart/Qs
+        # if
+        # otherwise, follow suit,
+        # otherwise play non heart
+
+        return random.choice(hand)
+
+
+
+def is_ai(player):
+    return 'AI-' in player
 
 
 class Game():
@@ -43,7 +64,15 @@ class Game():
         self.current_player = self._find_starting_player()
         self.tricks.append(Trick(number=0, plays=[]))
 
+        while is_ai(self.current_player):
+            card_to_play = AIPlayer(self.current_player).make_move(
+                hand=self.hands[self.current_player],
+                trick=self.get_current_trick())
+
+            self.move(self.current_player, card_to_play)
+
         return self
+
 
     def fill_empty_players(self):
         for i, p in enumerate(self.players):
@@ -91,7 +120,7 @@ class Game():
         return self.tricks[-1]
 
     def _next_player(self):
-        index = self.players.index(self.current_player) + 1 % 4
+        index = (self.players.index(self.current_player) + 1) % 4
         return self.players[index]
 
     def move(self, player, card):
@@ -119,8 +148,11 @@ class Game():
         # - remove card from hand
         self.hands[player].remove(card)
 
-        if len(trick.plays) != 4:
+        if len(trick.plays) < 4:
             self.current_player = self._next_player()
+            return
+
+
 
         # - if not end of trick, set new current player's turn
         #     - trigger 'next player'
