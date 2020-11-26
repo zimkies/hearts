@@ -253,7 +253,7 @@ class Deck:
     def split(self):
         return [
             self.cards[:13],
-            self.cards[14:26],
-            self.cards[27:39],
-            self.cards[40:52]
+            self.cards[13:26],
+            self.cards[26:39],
+            self.cards[39:52]
         ]
