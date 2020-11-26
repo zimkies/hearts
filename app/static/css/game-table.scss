@@ -8,21 +8,19 @@
 
 .player {
     display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .player--1 {
     grid-column-start: 2;
     grid-row-start: 1;
-    text-align: center;
 }
 
 .player--2 {
     grid-column-start: 1;
     grid-row-start: 2;
-    text-align: right;
 }
 
 .player--3 {
@@ -33,7 +31,6 @@
 .player--self {
     grid-column-start: 2;
     grid-row-start: 3;
-    text-align: center;
 }
 
 .game-table__board {
@@ -42,6 +39,7 @@
 }
 
 .game-room__id {
+   color: $color-text;
    text-align: right;
-   color: $color-text; 
+   margin: 1rem 1rem 0;
 }
