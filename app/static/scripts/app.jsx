@@ -148,9 +148,6 @@ class StartedGame extends React.Component {
 
         return (
             <div className="player__hand">
-
-                {renderedCards}
-                {renderedCards}
                 {renderedCards}
             </div>
         );
