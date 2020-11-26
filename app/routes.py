@@ -33,3 +33,13 @@ def fetch_game(game_id):
 def start_game(game_id):
     game = GameRepository.start(game_id)
     return jsonify(game.as_dict_for_player(session['id']))
+
+
+@app.route('/api/games/<game_id>/move', methods=['post'])
+def game_move(game_id):
+    game = GameRepository.get(game_id)
+
+    game.move(session['id'], card)
+
+
+    return jsonify(game.as_dict_for_player(session['id']))

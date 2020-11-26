@@ -42,3 +42,8 @@ npm run watch
 Both of these commands will ensure live reloads of your backend/frontend code whenever you change the source code during development.
 
 Note you'll still have to hard-refresh the page to see javascript changes though.
+
+
+## Testing
+
+pyenv run pytest app/tests/
