@@ -1,0 +1,47 @@
+@import 'variables';
+
+.game-table {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+}
+
+.player {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.player--1 {
+    grid-column-start: 2;
+    grid-row-start: 1;
+    text-align: center;
+}
+
+.player--2 {
+    grid-column-start: 1;
+    grid-row-start: 2;
+    text-align: right;
+}
+
+.player--3 {
+    grid-column-start: 3;
+    grid-row-start: 2;
+}
+
+.player--self {
+    grid-column-start: 2;
+    grid-row-start: 3;
+    text-align: center;
+}
+
+.game-table__board {
+    grid-column-start: 2;
+    grid-row-start: 2;
+}
+
+.game-room__id {
+   text-align: right;
+   color: $color-text; 
+}

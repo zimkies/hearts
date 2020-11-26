@@ -14,10 +14,33 @@ const config = {
     module: {
         rules: [
             {
-            test: /\.(js|jsx)?/,
+            test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: 'babel-loader'
-            }
+            },
+            {
+                // look for .css or .scss files
+                test: /\.(css|scss)$/,
+                exclude: /node_modules/,
+                use: [
+                  {
+                    loader: 'style-loader',
+                  },
+                  {
+                    loader: 'css-loader',
+                  },
+                  {
+                    loader: 'sass-loader',
+                    options: {
+                      sourceMap: true,
+                    },
+                  },
+                ],
+            },
+            {
+              test: /\.svg$/,
+              use: ['@svgr/webpack'],
+            },
         ]
     }
 };
