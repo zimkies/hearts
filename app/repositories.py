@@ -2,14 +2,20 @@ from collections import namedtuple
 import random
 import uuid
 
+class AIPlayer():
+
+    def __init__(self):
+        self.username = 'AI-' + uuid.uuid4().hex[:5]
+
+
 
 class Game():
-    def __init__(self, id, state='UNSTARTED', players=[], hands={}, moves=[]):
+    def __init__(self, id, state='UNSTARTED', players=None, hands=None, moves=None):
         self.id = id
         self.state = state
-        self.players = players
-        self.hands = hands
-        self.moves = moves
+        self.players = players or [None, None, None, None]
+        self.hands = hands or {}
+        self.moves = moves or []
         self.current_player = None
         self.tricks = []
 
@@ -26,7 +32,11 @@ class Game():
     def __str__(self):
         return str(self.as_dict())
 
+    def add_player(self, player, position):
+        self.players[position] = player
+
     def start(self):
+        self.fill_empty_players()
         self.state = "STARTED"
         self.deal()
 
@@ -34,6 +44,11 @@ class Game():
         self.tricks.append(Trick(number=0, plays=[]))
 
         return self
+
+    def fill_empty_players(self):
+        for i, p in enumerate(self.players):
+            if p is None:
+                self.players[i] = AIPlayer().username
 
     def deal(self, deck=None):
         if not deck:
@@ -51,9 +66,6 @@ class Game():
         for k, v in self.hands.items():
             if Card.from_shorthand('2c') in v:
                 return k
-
-    def add_player(self, player):
-        self.players.append(player)
 
     def as_dict_for_player(self, player):
         attributes = self.as_dict()
@@ -155,13 +167,6 @@ class GameRepository():
     @staticmethod
     def get(game_id):
         print(GAMES)
-        return GAMES[game_id]
-
-    @classmethod
-    def start(cls, game_id):
-        game = GAMES[game_id]
-        game = game.start()
-        GAMES[game_id] = game
         return GAMES[game_id]
 
     @staticmethod

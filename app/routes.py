@@ -19,7 +19,7 @@ def index(id=None):
 def create_game():
     print(session)
     game = GameRepository.create()
-    game.add_player(session['id'])
+    game.add_player(player=session['id'], position=0)
 
     return jsonify(game.as_dict_for_player(session['id']))
 
@@ -31,7 +31,10 @@ def fetch_game(game_id):
 
 @app.route('/api/games/<game_id>/start', methods=['post'])
 def start_game(game_id):
-    game = GameRepository.start(game_id)
+    game = GameRepository.get(game_id)
+
+    game.start()
+
     return jsonify(game.as_dict_for_player(session['id']))
 
 
