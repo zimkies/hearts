@@ -196,7 +196,7 @@ class Trick(namedtuple('Trick', ["number", "plays"])):
     def as_dict(self):
         return {
             'number': self.number,
-            'plays': self.plays
+            'plays': [p.as_dict() for p in self.plays]
         }
 
 
@@ -205,8 +205,8 @@ class Play(namedtuple('Play', ["player", "card"])):
 
     def as_dict(self):
         return {
-            'player': player,
-            'card': card
+            'player': self.player,
+            'card': self.card
         }
 
 
