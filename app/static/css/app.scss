@@ -8,6 +8,7 @@ body {
     background: $color-brand-background;
     color: $color-text;
     font: $font-size-16 $font-family-primary;
+    margin: 0;
 }
 
 .header {
@@ -17,7 +18,7 @@ body {
     font-weight: 600;
     color: $color-brand-main;
     border-bottom: 1px solid rgba($color-text, .08);
-    padding: 1rem 0;
+    padding: 0.5rem 1rem;
 }
 
 .btn {
@@ -31,8 +32,7 @@ body {
     display: inline-block;
 
     &:hover {
-        background: $color-brand-bone-beige;
-        border-color: transparent;
+        border-color: $color-text;
     }
 }
 
@@ -48,4 +48,8 @@ body {
     margin: 1rem 1rem 0 0;
     flex-basis: calc(50% - 2rem);
     font-size: $font-size-24;
+}
+
+.game-room {
+    position: relative;
 }

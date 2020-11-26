@@ -7,16 +7,28 @@
 }
 
 .player__card {
-    width: 2.5rem;
-    height: 5.5rem;
     border: 1px solid rgba($color-text, 0.08);
     transition: all .25s ease-in-out;
     cursor: pointer;
+    font-size: $font-size-20;
+    display: flex;
+    flex-direction: column;
+    padding: 0.25rem 0.25rem 1rem;
 
     &:hover {
         border-color: $color-text;
         transform: translateY(-2px);
     }
+}
+
+.card__suit {
+    width: 35px;
+    height: 35px;
+    margin-top: 0.5rem;
+}
+
+.icon__spade {
+    height: 42px;
 }
 
 .icon-club,
@@ -25,7 +37,7 @@
     transition: all .25s ease-in-out;
 
     .player__card:hover & {
-        fill: $color-brand-gray;
+        fill: mix($color-text, $color-black, 10%);
     }
 }
 
@@ -35,6 +47,6 @@
     transition: all .25s ease-in-out;
 
     .player__card:hover & {
-        fill: $color-brand-apricot-pink;
+        fill: mix($color-text, $color-brand-flamingo-red, 10%);
     }
 }
