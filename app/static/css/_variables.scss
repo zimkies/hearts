@@ -1,0 +1,42 @@
+$color-white: #ffffff;
+$color-black: #000000;
+
+$color-gray-92: #141414;
+$color-gray-76: #3E3E3E;
+$color-gray-60: #666666;
+$color-gray-25: #C0C0C0;
+
+$color-brand-opal-green: #A3BCB6;
+$color-brand-hunter-green: #39603D;
+$color-brand-lunar-green: #3C403D;
+$color-brand-haze-gray: #DADED4;
+
+$color-brand-linen-beige: #EAE7DC;
+$color-brand-bone-beige: #D8C3A5;
+$color-brand-natural-gray: #8E8D8A;
+$color-brand-apricot-pink: #E98074;
+$color-brand-flamingo-red: #E85A4F;
+
+$color-brand-main: $color-brand-flamingo-red;
+$color-brand-accent: $color-brand-apricot-pink;
+$color-brand-gray: $color-brand-natural-gray;
+$color-brand-white: $color-brand-linen-beige;
+
+$color-brand-background: $color-brand-linen-beige;
+$color-text: $color-gray-76;
+
+//FONT SIZES
+$font-size-13: .8125rem;
+$font-size-14: .875rem;
+$font-size-16: 1rem;
+$font-size-18: 1.125rem;
+$font-size-20: 1.25rem;
+$font-size-24: 1.5rem;
+$font-size-26: 1.625rem;
+$font-size-28: 1.75rem;
+$font-size-32: 2rem;
+
+$font-family-primary: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$font-family-secondary: "Avenir Next Medium", "AvenirNext-Medium", "Avenir Next", Helvetica, Arial, "Lucida Grande", sans-serif;
+
+$font-family-logo: $font-family-secondary;

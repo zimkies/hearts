@@ -1,0 +1,51 @@
+@import 'variables';
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: $color-brand-background;
+    color: $color-text;
+    font: $font-size-16 $font-family-primary;
+}
+
+.header {
+    font: 600 $font-size-26 $font-family-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.25rem;
+    font-weight: 600;
+    color: $color-brand-main;
+    border-bottom: 1px solid rgba($color-text, .08);
+    padding: 1rem 0;
+}
+
+.btn {
+    border: 1px solid rgba($color-text, .08);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: all .25s ease-in-out;
+    cursor: pointer;
+    display: inline-block;
+
+    &:hover {
+        background: $color-brand-bone-beige;
+        border-color: transparent;
+    }
+}
+
+.menu-btns-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 2rem auto 0;
+    width: 50%;
+}
+
+.menu-btn {
+    padding: 1.5rem;
+    margin: 1rem 1rem 0 0;
+    flex-basis: calc(50% - 2rem);
+    font-size: $font-size-24;
+}

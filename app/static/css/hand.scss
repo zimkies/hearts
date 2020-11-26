@@ -1,0 +1,40 @@
+@import 'variables';
+
+.player__hand {
+    display: flex;
+    margin-top: 1rem;
+    flex-basis: 100%;
+}
+
+.player__card {
+    width: 2.5rem;
+    height: 5.5rem;
+    border: 1px solid rgba($color-text, 0.08);
+    transition: all .25s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+        border-color: $color-text;
+        transform: translateY(-2px);
+    }
+}
+
+.icon-club,
+.icon-spade {
+    fill: $color-text;
+    transition: all .25s ease-in-out;
+
+    .player__card:hover & {
+        fill: $color-brand-gray;
+    }
+}
+
+.icon-diamond,
+.icon-heart {
+    fill: $color-brand-flamingo-red;
+    transition: all .25s ease-in-out;
+
+    .player__card:hover & {
+        fill: $color-brand-apricot-pink;
+    }
+}
