@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 import random
 import uuid
 
@@ -30,7 +30,9 @@ def is_ai(player):
 
 
 class Game:
-    def __init__(self, id, state="UNSTARTED", players=None, hands=None, moves=None):
+    SCORE_TO_WIN = 100
+
+    def __init__(self, id, state="UNSTARTED", players=None, hands=None, moves=None, deck_class=None):
         self.id = id
         self.state = state
         self.players = players or [None, None, None, None]
@@ -38,6 +40,11 @@ class Game:
         self.moves = moves or []
         self.current_player = None
         self.tricks = []
+        self.score_history = defaultdict(list)
+        self.deck_class = deck_class or Deck
+
+        self.round_number = None
+        self.rounds = []
 
     def as_dict(self):
         return {
@@ -58,14 +65,23 @@ class Game:
     def start(self):
         self.fill_empty_players()
         self.state = "STARTED"
-        self.deal()
-
-        self.current_player = self._find_starting_player()
-        self.tricks.append(Trick(number=0, plays=[]))
-
-        self.make_ai_moves()
+        self.start_round()
 
         return self
+
+    def start_round(self):
+        if self.round_number is None:
+            self.round_number = 0
+        else:
+            self.round_number += 1
+
+        self.deal()
+        self.current_player = self._find_starting_player()
+        self.rounds.append(self.tricks)
+
+        # Reset tricks for this round
+        self.tricks = [Trick(number=0, plays=[])]
+        self.make_ai_moves()
 
     def fill_empty_players(self):
         for i, p in enumerate(self.players):
@@ -74,7 +90,7 @@ class Game:
 
     def deal(self, deck=None):
         if not deck:
-            deck = Deck.create_shuffled_deck()
+            deck = self.deck_class.create_shuffled_deck()
 
         hands = {}
         split_hands = deck.split()
@@ -161,12 +177,30 @@ class Game:
             self.current_player = self._next_player()
             return
 
-        # Got to next trick
-        elif trick.number < 13:
-            # get winner of trick:
-            winning_play = trick.get_winner_of_trick()
+        # get winner of trick:
+        winning_play = trick.get_winner_of_trick()
+        if trick.number < 12:  # 0-based indexing
+            # Got to next trick
             self._start_next_trick()
             self.current_player = winning_play.player
+
+        # End of round!
+        else:
+            # Tally up tricks in round, add scores, and end round
+            scores = Round(tricks=self.tricks).calculate_scores()
+            for player, score in scores.items():
+                self.score_history[player].append(score)
+
+            self.current_player = None
+
+            # If scores are under the max score, start a new round
+            if max(self.tally_scores().values()) < self.SCORE_TO_WIN:
+                self.start_round()
+
+            # Game is over
+            else:
+                self.end_game()
+
 
         # - if not end of trick, set new current player's turn
         #     - trigger 'next player'
@@ -177,6 +211,16 @@ class Game:
         # - update game status as EOG
         # - trigger an update.
 
+    def end_game(self):
+        self.state = "ENDED"
+        self.current_player = None
+
+    def tally_scores(self) -> dict:
+        scores = {}
+        for player, score_history in self.score_history.items():
+            scores[player] = sum(score_history)
+
+        return scores
 
     def _start_next_trick(self):
         trick = self.get_current_trick()
@@ -207,7 +251,16 @@ class Card(namedtuple("Card", ["number", "suit"])):
 
     @classmethod
     def from_shorthand(cls, shorthand):
-        return cls(number=shorthand[0], suit=shorthand[1])
+        return cls(number=shorthand[:-1], suit=shorthand[-1])
+
+    def get_value(self):
+        if str(self) == '12c':  # Queen of clubs
+            return 13
+        elif self.suit == 'h':  # hearts
+            return 1
+        else:
+            return 0
+
 
 
 class Trick(namedtuple("Trick", ["number", "plays"])):
@@ -229,6 +282,34 @@ class Trick(namedtuple("Trick", ["number", "plays"])):
                 winner = play
 
         return winner
+
+class Round(namedtuple("Round", ["tricks"])):
+
+    def calculate_scores(self):
+        # initialize players to ensure everyone has a score
+        scores = defaultdict(int)
+        for play in self.tricks[0].plays:
+            scores[play.player] = 0
+
+        # sum up scores for all tricks
+        for trick in self.tricks:
+            winning_play = trick.get_winner_of_trick()
+            for play in trick.plays:
+                scores[winning_play.player] += play.card.get_value()
+
+
+        # account for shooting the moon
+        moonshooters = [p for p, s in scores.items() if s == 26]
+        if len(moonshooters) > 0:
+            moonshooter = moonshooters[0]
+            for player in scores.keys():
+                if player == moonshooter:
+                    scores[player] = 0
+                else:
+                    scores[player] = 26
+
+
+        return scores
 
 
 class Play(namedtuple("Play", ["player", "card"])):
@@ -268,8 +349,6 @@ class Deck:
         for n in NUMBERS:
             CARDS.append(Card(suit=s, number=str(n)))
 
-    # CARDS = [str(n) + s for n in NUMBERS for s in SUITS]
-
     def __init__(self):
         self.cards = self.CARDS[:]
 
@@ -289,3 +368,12 @@ class Deck:
             self.cards[26:39],
             self.cards[39:52],
         ]
+
+
+class TestingDeck(Deck):
+    """
+    A special type of deck that doesn't shuffle cards even when you ask it to.
+    Useful for testing, because it always returns the same order of cards.
+    """
+    def shuffle(self):
+        pass
