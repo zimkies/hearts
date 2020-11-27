@@ -26,7 +26,7 @@ class TestGame(unittest.TestCase):
         game = self._create_game()
 
         starting_player = game._find_starting_player()
-        self.assertEqual(starting_player, "ada")
+        self.assertEqual(starting_player, "michael")
 
         card = Card.from_shorthand("2c")
         game.move(starting_player, card=card)
@@ -35,7 +35,7 @@ class TestGame(unittest.TestCase):
 
         self.assertTrue(card not in game.hands[starting_player])
 
-        self.assertEqual(game.current_player, "michael")
+        self.assertEqual(game.current_player, "pule")
 
     def test_starting_game_fills_empty_players(self):
         game = Game(id=uuid.uuid4().hex[:5], players=["ben", None, None, None])
@@ -50,3 +50,43 @@ class TestGame(unittest.TestCase):
                 self.assertTrue("AI-" in p)
             else:
                 self.assertEqual(p, "ben")
+
+
+    def test_move_at_end_of_trick(self):
+        game = self._create_game()
+
+        starting_player = game._find_starting_player()
+        self.assertEqual(starting_player, "michael")
+
+        game.move("michael", Card.from_shorthand("2c"))
+        game.move("pule", Card.from_shorthand("2s"))
+        game.move("ben", Card.from_shorthand("2h"))
+        game.move("ada", card=Card.from_shorthand("2d"))
+
+        self.assertEqual(game.current_player, "michael")
+
+        self.assertEqual(game.tricks, [
+            Trick(0, [
+                Play("michael", Card.from_shorthand("2c")),
+                Play("pule", Card.from_shorthand("2s")),
+                Play("ben", Card.from_shorthand("2h")),
+                Play("ada", Card.from_shorthand("2d")),
+            ]),
+            Trick(1, [
+            ])
+        ])
+
+
+class TestTrick(unittest.TestCase):
+    def test_get_winner_of_trick(self):
+        trick = Trick(0, plays=[
+            Play("michael", Card.from_shorthand("2c")),
+            Play("pule", Card.from_shorthand("2s")),
+            Play("ben", Card.from_shorthand("2h")),
+            Play("ada", Card.from_shorthand("2d")),
+        ])
+
+        self.assertEqual(
+            trick.get_winner_of_trick(),
+            Play("michael", Card.from_shorthand("2c")),
+            )

@@ -63,12 +63,7 @@ class Game:
         self.current_player = self._find_starting_player()
         self.tricks.append(Trick(number=0, plays=[]))
 
-        while is_ai(self.current_player):
-            card_to_play = AIPlayer(self.current_player).make_move(
-                hand=self.hands[self.current_player], trick=self.get_current_trick()
-            )
-
-            self.move(self.current_player, card_to_play)
+        self.make_ai_moves()
 
         return self
 
@@ -120,7 +115,20 @@ class Game:
         index = (self.players.index(self.current_player) + 1) % 4
         return self.players[index]
 
+    def make_ai_moves(self):
+        while is_ai(self.current_player):
+            card_to_play = AIPlayer(self.current_player).make_move(
+                hand=self.hands[self.current_player], trick=self.get_current_trick()
+            )
+
+            self._move(self.current_player, card_to_play)
+
     def move(self, player, card):
+        self._move(player, card)
+
+        self.make_ai_moves()
+
+    def _move(self, player, card):
         # Confirm it's the player's turn.
         if self.current_player != player:
             raise ValueError("Not current player's turn")
@@ -148,9 +156,17 @@ class Game:
         # - remove card from hand
         self.hands[player].remove(card)
 
+        # Continue trick
         if len(trick.plays) < 4:
             self.current_player = self._next_player()
             return
+
+        # Got to next trick
+        elif trick.number < 13:
+            # get winner of trick:
+            winning_play = trick.get_winner_of_trick()
+            self._start_next_trick()
+            self.current_player = winning_play.player
 
         # - if not end of trick, set new current player's turn
         #     - trigger 'next player'
@@ -160,6 +176,11 @@ class Game:
         # - else if end of game:
         # - update game status as EOG
         # - trigger an update.
+
+
+    def _start_next_trick(self):
+        trick = self.get_current_trick()
+        self.tricks.append(Trick(number=trick.number + 1, plays=[]))
 
     def is_invalid_card_for_trick(self, card, trick, hand):
         # TODO: Needs to be fully implemented
@@ -195,6 +216,20 @@ class Trick(namedtuple("Trick", ["number", "plays"])):
     def as_dict(self):
         return {"number": self.number, "plays": [p.as_dict() for p in self.plays]}
 
+    def get_winner_of_trick(self):
+        if len(self.plays) < 4:
+            raise ValueError("trick isn't finished yet, no winner")
+
+        winning_suit = self.plays[0].card.suit
+        winner = self.plays[0]
+
+        for play in self.plays:
+            # TODO: Fix ordering for Aces
+            if play.card.suit == winning_suit and play.card.number > winner.card.number:
+                winner = play
+
+        return winner
+
 
 class Play(namedtuple("Play", ["player", "card"])):
     pass
@@ -225,7 +260,7 @@ class GameRepository:
 
 
 class Deck:
-    NUMBERS = range(1, 13)
+    NUMBERS = range(1, 14)
     SUITS = ("h", "d", "c", "s")
 
     CARDS = []
