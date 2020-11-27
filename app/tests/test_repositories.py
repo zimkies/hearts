@@ -5,7 +5,13 @@ import uuid
 
 class TestGame(unittest.TestCase):
     def _create_game(self):
-        game = Game(id=uuid.uuid4().hex[:5], state='STARTED', players=["ben", "ada", "michael", "pule"], hands={}, moves=[])
+        game = Game(
+            id=uuid.uuid4().hex[:5],
+            state="STARTED",
+            players=["ben", "ada", "michael", "pule"],
+            hands={},
+            moves=[],
+        )
 
         game.start()
 
@@ -16,14 +22,13 @@ class TestGame(unittest.TestCase):
 
         return game
 
-
     def test_move(self):
         game = self._create_game()
 
         starting_player = game._find_starting_player()
         self.assertEqual(starting_player, "ada")
 
-        card = Card.from_shorthand('2c')
+        card = Card.from_shorthand("2c")
         game.move(starting_player, card=card)
 
         self.assertEqual(game.tricks, [Trick(0, [Play(starting_player, card)])])
@@ -39,10 +44,9 @@ class TestGame(unittest.TestCase):
 
         game.start()
 
-
         self.assertEqual(len(game.players), 4)
         for i, p in enumerate(game.players):
             if i != 0:
-                self.assertTrue('AI-' in p)
+                self.assertTrue("AI-" in p)
             else:
                 self.assertEqual(p, "ben")
