@@ -47,3 +47,21 @@ Note you'll still have to hard-refresh the page to see javascript changes though
 ## Testing
 
 pyenv run pytest app/tests/
+
+
+## TODO list
+
+- Search for all 'todo's in codebase for more ideas.
+- Make actions realtime by using websockets
+- Validate moves (e.g. have to follow suits)
+- Add the 'exchange cards' part of the game.
+- Keep score
+- Add concept of more than one round in a game.
+- Add ability to join someone else's game.
+- Make the AI not completely dumb
+- Make AI player names (and game uuids) more fun (e.g red-penguin-2342)
+- Ensure this works on a phone as well as computer.
+- Upload to heroku
+- Add database storage for games so that reloading the server doesn't wipe out all existing games.
+- Add python and js linters.
+- Add auto-test runner as pre-commit hook.

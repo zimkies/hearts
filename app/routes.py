@@ -1,6 +1,6 @@
 from app import app
-from flask import render_template, jsonify, session
-from app.repositories import GameRepository
+from flask import render_template, jsonify, session, request
+from app.repositories import GameRepository, Card
 import uuid
 
 
@@ -41,8 +41,8 @@ def start_game(game_id):
 @app.route('/api/games/<game_id>/move', methods=['post'])
 def game_move(game_id):
     game = GameRepository.get(game_id)
-
+    card = request.json['card']
+    card = Card(*card)
     game.move(session['id'], card)
-
 
     return jsonify(game.as_dict_for_player(session['id']))

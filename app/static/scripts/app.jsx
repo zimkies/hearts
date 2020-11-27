@@ -112,14 +112,19 @@ class Card extends React.Component {
 
     makeMove() {
         console.log('message', this.props.gameId, this.props.card);
-        // fetch(`/api/games/${this.props.gameId}/move`, {
-        //     method: 'POST', 
-        //     body: JSON.stringify(this.props.card)
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        //     console.log('Success:', data);
-        // });
+        fetch(`/api/games/${this.props.gameId}/move`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              card: this.props.card
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        });
     }
 
     render() {
