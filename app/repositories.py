@@ -54,6 +54,7 @@ class Game:
             "hands": self.hands,
             "moves": self.moves,
             "current_player": self.current_player,
+            "score_history": self.score_history,
         }
 
     def __str__(self):
