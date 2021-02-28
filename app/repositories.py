@@ -32,7 +32,15 @@ def is_ai(player):
 class Game:
     SCORE_TO_WIN = 100
 
-    def __init__(self, id, state="UNSTARTED", players=None, hands=None, moves=None, deck_class=None):
+    def __init__(
+        self,
+        id,
+        state="UNSTARTED",
+        players=None,
+        hands=None,
+        moves=None,
+        deck_class=None,
+    ):
         self.id = id
         self.state = state
         self.players = players or [None, None, None, None]
@@ -202,7 +210,6 @@ class Game:
             else:
                 self.end_game()
 
-
         # - if not end of trick, set new current player's turn
         #     - trigger 'next player'
         # - else if not end of round, set new trick with new starter
@@ -255,13 +262,12 @@ class Card(namedtuple("Card", ["number", "suit"])):
         return cls(number=shorthand[:-1], suit=shorthand[-1])
 
     def get_value(self):
-        if str(self) == '12c':  # Queen of clubs
+        if str(self) == "12c":  # Queen of clubs
             return 13
-        elif self.suit == 'h':  # hearts
+        elif self.suit == "h":  # hearts
             return 1
         else:
             return 0
-
 
 
 class Trick(namedtuple("Trick", ["number", "plays"])):
@@ -284,8 +290,8 @@ class Trick(namedtuple("Trick", ["number", "plays"])):
 
         return winner
 
-class Round(namedtuple("Round", ["tricks"])):
 
+class Round(namedtuple("Round", ["tricks"])):
     def calculate_scores(self):
         # initialize players to ensure everyone has a score
         scores = defaultdict(int)
@@ -298,7 +304,6 @@ class Round(namedtuple("Round", ["tricks"])):
             for play in trick.plays:
                 scores[winning_play.player] += play.card.get_value()
 
-
         # account for shooting the moon
         moonshooters = [p for p, s in scores.items() if s == 26]
         if len(moonshooters) > 0:
@@ -308,7 +313,6 @@ class Round(namedtuple("Round", ["tricks"])):
                     scores[player] = 0
                 else:
                     scores[player] = 26
-
 
         return scores
 
@@ -376,5 +380,6 @@ class TestingDeck(Deck):
     A special type of deck that doesn't shuffle cards even when you ask it to.
     Useful for testing, because it always returns the same order of cards.
     """
+
     def shuffle(self):
         pass

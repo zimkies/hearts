@@ -35,7 +35,6 @@ def start_game(game_id):
     game = GameRepository.get(game_id)
 
     game.start()
-
     return jsonify(game.as_dict_for_player(session["id"]))
 
 
